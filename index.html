@@ -1,17 +1,24 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
 
-  <title>💣 Clickjacking PoC</title>
+  <title>💣 Clickjacking PoC - Página Y</title>
 
-  <link rel="stylesheet" href="poc.css" />
+  <link rel="stylesheet" href="PoC.css" />
 </head>
 
 <body>
 
-  <!-- Painel para informar o alvo -->
+  <!-- Barra de carregamento -->
+  <div id="loadingBar"></div>
+
+  <!-- Painel -->
   <div id="controlPanel">
 
     <input
@@ -24,7 +31,9 @@
       Carregar
     </button>
 
-    <span id="targetStatus"></span>
+    <span id="targetStatus">
+      Aguardando URL...
+    </span>
 
     <span id="targetDisplay"></span>
 
@@ -36,10 +45,10 @@
     src="about:blank">
   </iframe>
 
-  <!-- Imagem da PoC -->
+  <!-- Imagem específica da Página Y -->
   <img
     id="pocImage"
-    src="assets/manutencao.jpg"
+    src="assets/indexB.jpg"
     alt="Imagem da PoC"
   />
 
@@ -52,24 +61,25 @@
     CLIQUE AQUI
   </a>
 
+  <!-- Configuração específica da Página Y -->
   <script>
+
     window.POC_CONFIG = {
 
-      // Resolução usada para calcular as coordenadas
       baseWidth: 1920,
       baseHeight: 1080,
 
-      // Ponto correspondente ao alvo
-      targetX: 960,
-      targetY: 580,
+      targetX: 1120,
+      targetY: 420,
 
-      // Ajuste fino do link
-      linkOffsetX: -80,
-      linkOffsetY: -20
+      linkOffsetX: -60,
+      linkOffsetY: -15
     };
+
   </script>
 
-  <script src="poc.js"></script>
+  <script src="Poc.js"></script>
 
 </body>
+
 </html>
