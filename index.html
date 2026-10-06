@@ -3,20 +3,22 @@
 
 <head>
   <meta charset="UTF-8" />
+
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0"
   />
 
-  <title>💣 Clickjacking PoC - Página Y</title>
+  <title>💣 Clickjacking PoC</title>
 
-  <link rel="stylesheet" href="PoC.css" />
+  <link rel="stylesheet" href="poc.css" />
 </head>
 
 <body>
 
   <!-- Barra de carregamento -->
   <div id="loadingBar"></div>
+
 
   <!-- Painel -->
   <div id="controlPanel">
@@ -31,13 +33,26 @@
       Carregar
     </button>
 
+    <button id="toggleImage">
+      Ocultar imagem
+    </button>
+
+    <button id="toggleDrag">
+      Posicionar botão
+    </button>
+
     <span id="targetStatus">
       Aguardando URL...
     </span>
 
     <span id="targetDisplay"></span>
 
+    <span id="coordinates">
+      X: 0 | Y: 0
+    </span>
+
   </div>
+
 
   <!-- Site alvo -->
   <iframe
@@ -45,14 +60,16 @@
     src="about:blank">
   </iframe>
 
-  <!-- Imagem específica da Página Y -->
+
+  <!-- Imagem -->
   <img
     id="pocImage"
-    src="assets/indexB.jpg"
+    src="assets/manutencao.jpg"
     alt="Imagem da PoC"
   />
 
-  <!-- Elemento interativo sobreposto -->
+
+  <!-- Elemento sobreposto -->
   <a
     id="redirectLink"
     href="https://example.com/"
@@ -61,7 +78,8 @@
     CLIQUE AQUI
   </a>
 
-  <!-- Configuração específica da Página Y -->
+
+  <!-- Configuração -->
   <script>
 
     window.POC_CONFIG = {
@@ -69,14 +87,16 @@
       baseWidth: 1920,
       baseHeight: 1080,
 
-      targetX: 1120,
-      targetY: 420,
+      targetX: 960,
+      targetY: 580,
 
-      linkOffsetX: -60,
-      linkOffsetY: -15
+      linkOffsetX: -80,
+      linkOffsetY: -20
+
     };
 
   </script>
+
 
   <script src="poc.js"></script>
 
