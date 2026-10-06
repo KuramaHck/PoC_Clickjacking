@@ -1,4 +1,4 @@
-let imageVisible = true;
+let imageVisible = false;
 let dragMode = false;
 let dragging = false;
 
