@@ -26,35 +26,60 @@ iframe {
   object-fit: fill;
 }
 
-/* Link sobreposto */
 #redirectLink {
   position: absolute;
   z-index: 3;
+
   padding: 12px 24px;
+
   background: rgba(255, 0, 0, 0.85);
   color: white;
+
   text-decoration: none;
+
   font-family: Arial, sans-serif;
   font-size: 18px;
   font-weight: bold;
+
   border-radius: 6px;
+
   cursor: pointer;
+
+  user-select: none;
 }
 
-/* Painel de controle */
+#redirectLink.draggable {
+  cursor: move;
+  outline: 2px dashed #fff;
+  outline-offset: 4px;
+}
+
+#redirectLink.dragging {
+  opacity: 0.8;
+}
+
+
+/* =========================================================
+   PAINEL
+   ========================================================= */
+
 #controlPanel {
   position: absolute;
+
   top: 10px;
   left: 10px;
+
   z-index: 20;
 
   display: flex;
   gap: 8px;
   align-items: center;
+  flex-wrap: wrap;
 
   padding: 10px;
 
   background: rgba(0, 0, 0, 0.90);
+
   border-radius: 6px;
 
   font-family: Arial, sans-serif;
@@ -62,6 +87,7 @@ iframe {
 
 #targetUrl {
   width: 420px;
+
   padding: 8px;
 
   border: 1px solid #666;
@@ -70,14 +96,21 @@ iframe {
   font-size: 14px;
 }
 
-#loadTarget {
+#loadTarget,
+#toggleImage,
+#toggleDrag {
   padding: 8px 14px;
 
   border: none;
   border-radius: 4px;
 
   cursor: pointer;
+
   font-weight: bold;
+}
+
+#toggleDrag.active {
+  background: #ff9800;
 }
 
 #targetStatus {
@@ -99,16 +132,31 @@ iframe {
 
 #targetDisplay {
   color: #7CFC00;
+
   font-size: 12px;
+
   max-width: 500px;
+
   overflow: hidden;
+
   text-overflow: ellipsis;
+
   white-space: nowrap;
 }
+
+
+/* Coordenadas */
+#coordinates {
+  color: #00ffff;
+  font-size: 12px;
+  font-family: monospace;
+}
+
 
 /* Barra de carregamento */
 #loadingBar {
   position: absolute;
+
   top: 0;
   left: 0;
 
