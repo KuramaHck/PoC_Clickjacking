@@ -1,3 +1,10 @@
+let imageVisible = true;
+let dragMode = false;
+let dragging = false;
+
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+
 function carregarTarget() {
   const input = document.getElementById("targetUrl");
   const iframe = document.getElementById("targetFrame");
@@ -22,7 +29,6 @@ function carregarTarget() {
     return;
   }
 
-  // Aceita somente HTTP/HTTPS
   try {
     const parsedUrl = new URL(url);
 
@@ -46,14 +52,12 @@ function carregarTarget() {
     return;
   }
 
-  // Estado inicial
   status.textContent = "Carregando alvo...";
   status.className = "loading";
 
   if (loadingBar) {
     loadingBar.style.width = "0%";
 
-    // Pequena animação visual
     setTimeout(() => {
       loadingBar.style.width = "30%";
     }, 50);
@@ -67,32 +71,44 @@ function carregarTarget() {
     targetDisplay.textContent = url;
   }
 
-  // Remove o handler anterior
-  iframe.onload = null;
-
-  // Detecta o término da navegação do iframe
   iframe.onload = function () {
-
     if (loadingBar) {
       loadingBar.style.width = "100%";
     }
 
     status.textContent = "✓ Navegação concluída";
     status.className = "loaded";
-
-    /*
-     * Não é possível confirmar o conteúdo interno de um
-     * iframe cross-origin via JavaScript.
-     *
-     * Portanto este estado significa que o navegador
-     * concluiu a navegação do iframe.
-     */
   };
 
-  // Carrega o alvo
   iframe.src = url;
 }
 
+
+/* =========================================================
+   IMAGEM
+   ========================================================= */
+
+function alternarImagem() {
+  const imagem = document.getElementById("pocImage");
+  const botao = document.getElementById("toggleImage");
+
+  if (!imagem || !botao) {
+    return;
+  }
+
+  imageVisible = !imageVisible;
+
+  imagem.style.display = imageVisible ? "block" : "none";
+
+  botao.textContent = imageVisible
+    ? "Ocultar imagem"
+    : "Mostrar imagem";
+}
+
+
+/* =========================================================
+   POSICIONAMENTO
+   ========================================================= */
 
 function posicionarLink() {
   const largura = window.innerWidth;
@@ -111,18 +127,162 @@ function posicionarLink() {
 
   const link = document.getElementById("redirectLink");
 
-  if (link) {
-    const linkX =
-      largura * propX + (config.linkOffsetX || 0);
+  if (!link) {
+    return;
+  }
 
-    const linkY =
-      altura * propY + (config.linkOffsetY || 0);
+  const linkX =
+    largura * propX + (config.linkOffsetX || 0);
 
-    link.style.left = `${linkX}px`;
-    link.style.top = `${linkY}px`;
+  const linkY =
+    altura * propY + (config.linkOffsetY || 0);
+
+  link.style.left = `${linkX}px`;
+  link.style.top = `${linkY}px`;
+}
+
+
+/* =========================================================
+   MODO ARRASTAR
+   ========================================================= */
+
+function ativarModoArrastar() {
+  const link = document.getElementById("redirectLink");
+  const botao = document.getElementById("toggleDrag");
+
+  if (!link || !botao) {
+    return;
+  }
+
+  dragMode = !dragMode;
+
+  if (dragMode) {
+    botao.textContent = "✓ Posicionando";
+    botao.classList.add("active");
+
+    link.classList.add("draggable");
+    document.body.classList.add("drag-mode");
+
+  } else {
+    botao.textContent = "Posicionar botão";
+    botao.classList.remove("active");
+
+    link.classList.remove("draggable");
+    document.body.classList.remove("drag-mode");
   }
 }
 
+
+/* =========================================================
+   DRAG COM MOUSE
+   ========================================================= */
+
+function iniciarDrag(event) {
+
+  if (!dragMode) {
+    return;
+  }
+
+  const link = document.getElementById("redirectLink");
+
+  if (!link) {
+    return;
+  }
+
+  dragging = true;
+
+  const rect = link.getBoundingClientRect();
+
+  dragOffsetX = event.clientX - rect.left;
+  dragOffsetY = event.clientY - rect.top;
+
+  link.classList.add("dragging");
+
+  event.preventDefault();
+}
+
+
+function moverDrag(event) {
+
+  if (!dragging) {
+    return;
+  }
+
+  const link = document.getElementById("redirectLink");
+
+  if (!link) {
+    return;
+  }
+
+  let x = event.clientX - dragOffsetX;
+  let y = event.clientY - dragOffsetY;
+
+  /*
+   * Mantém o botão dentro da tela
+   */
+  const maxX = window.innerWidth - link.offsetWidth;
+  const maxY = window.innerHeight - link.offsetHeight;
+
+  x = Math.max(0, Math.min(x, maxX));
+  y = Math.max(0, Math.min(y, maxY));
+
+  link.style.left = `${x}px`;
+  link.style.top = `${y}px`;
+
+  atualizarCoordenadas();
+}
+
+
+function finalizarDrag() {
+
+  if (!dragging) {
+    return;
+  }
+
+  const link = document.getElementById("redirectLink");
+
+  dragging = false;
+
+  if (link) {
+    link.classList.remove("dragging");
+  }
+
+  atualizarCoordenadas();
+}
+
+
+function bloquearCliqueDuranteDrag(event) {
+
+  if (dragMode) {
+    event.preventDefault();
+  }
+}
+
+
+/* =========================================================
+   MOSTRAR COORDENADAS
+   ========================================================= */
+
+function atualizarCoordenadas() {
+
+  const link = document.getElementById("redirectLink");
+  const coordinateDisplay =
+    document.getElementById("coordinates");
+
+  if (!link || !coordinateDisplay) {
+    return;
+  }
+
+  const rect = link.getBoundingClientRect();
+
+  coordinateDisplay.textContent =
+    `X: ${Math.round(rect.left)} | Y: ${Math.round(rect.top)}`;
+}
+
+
+/* =========================================================
+   INICIALIZAÇÃO
+   ========================================================= */
 
 window.addEventListener("load", function () {
 
@@ -131,6 +291,7 @@ window.addEventListener("load", function () {
   if (button) {
     button.addEventListener("click", carregarTarget);
   }
+
 
   const input = document.getElementById("targetUrl");
 
@@ -144,8 +305,76 @@ window.addEventListener("load", function () {
     });
   }
 
+
+  const toggleImage =
+    document.getElementById("toggleImage");
+
+  if (toggleImage) {
+    toggleImage.addEventListener(
+      "click",
+      alternarImagem
+    );
+  }
+
+
+  const toggleDrag =
+    document.getElementById("toggleDrag");
+
+  if (toggleDrag) {
+    toggleDrag.addEventListener(
+      "click",
+      ativarModoArrastar
+    );
+  }
+
+
+  const link =
+    document.getElementById("redirectLink");
+
+  if (link) {
+
+    link.addEventListener(
+      "mousedown",
+      iniciarDrag
+    );
+
+    link.addEventListener(
+      "click",
+      bloquearCliqueDuranteDrag
+    );
+
+  }
+
+
+  document.addEventListener(
+    "mousemove",
+    moverDrag
+  );
+
+  document.addEventListener(
+    "mouseup",
+    finalizarDrag
+  );
+
+
   posicionarLink();
+  atualizarCoordenadas();
+
 });
 
 
-window.addEventListener("resize", posicionarLink);
+window.addEventListener(
+  "resize",
+  function () {
+
+    /*
+     * Só recalcula automaticamente se
+     * não estiver no modo de posicionamento.
+     */
+    if (!dragMode) {
+      posicionarLink();
+    }
+
+    atualizarCoordenadas();
+  }
+);
