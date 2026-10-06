@@ -2,8 +2,10 @@ function carregarTarget() {
   const input = document.getElementById("targetUrl");
   const iframe = document.getElementById("targetFrame");
   const status = document.getElementById("targetStatus");
+  const loadingBar = document.getElementById("loadingBar");
+  const targetDisplay = document.getElementById("targetDisplay");
 
-  if (!input || !iframe) {
+  if (!input || !iframe || !status) {
     return;
   }
 
@@ -12,6 +14,11 @@ function carregarTarget() {
   if (!url) {
     status.textContent = "Informe uma URL.";
     status.className = "error";
+
+    if (loadingBar) {
+      loadingBar.style.width = "0%";
+    }
+
     return;
   }
 
@@ -19,24 +26,73 @@ function carregarTarget() {
   try {
     const parsedUrl = new URL(url);
 
-    if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
+    if (
+      parsedUrl.protocol !== "http:" &&
+      parsedUrl.protocol !== "https:"
+    ) {
       throw new Error("Protocolo inválido");
     }
 
     url = parsedUrl.href;
+
   } catch (error) {
     status.textContent = "URL inválida. Use http:// ou https://";
     status.className = "error";
+
+    if (loadingBar) {
+      loadingBar.style.width = "0%";
+    }
+
     return;
   }
 
-  status.textContent = "Carregando...";
+  // Estado inicial
+  status.textContent = "Carregando alvo...";
   status.className = "loading";
 
-  iframe.src = url;
+  if (loadingBar) {
+    loadingBar.style.width = "0%";
 
-  document.getElementById("targetDisplay").textContent = url;
+    // Pequena animação visual
+    setTimeout(() => {
+      loadingBar.style.width = "30%";
+    }, 50);
+
+    setTimeout(() => {
+      loadingBar.style.width = "65%";
+    }, 300);
+  }
+
+  if (targetDisplay) {
+    targetDisplay.textContent = url;
+  }
+
+  // Remove o handler anterior
+  iframe.onload = null;
+
+  // Detecta o término da navegação do iframe
+  iframe.onload = function () {
+
+    if (loadingBar) {
+      loadingBar.style.width = "100%";
+    }
+
+    status.textContent = "✓ Navegação concluída";
+    status.className = "loaded";
+
+    /*
+     * Não é possível confirmar o conteúdo interno de um
+     * iframe cross-origin via JavaScript.
+     *
+     * Portanto este estado significa que o navegador
+     * concluiu a navegação do iframe.
+     */
+  };
+
+  // Carrega o alvo
+  iframe.src = url;
 }
+
 
 function posicionarLink() {
   const largura = window.innerWidth;
@@ -56,15 +112,20 @@ function posicionarLink() {
   const link = document.getElementById("redirectLink");
 
   if (link) {
-    const linkX = largura * propX + (config.linkOffsetX || 0);
-    const linkY = altura * propY + (config.linkOffsetY || 0);
+    const linkX =
+      largura * propX + (config.linkOffsetX || 0);
+
+    const linkY =
+      altura * propY + (config.linkOffsetY || 0);
 
     link.style.left = `${linkX}px`;
     link.style.top = `${linkY}px`;
   }
 }
 
+
 window.addEventListener("load", function () {
+
   const button = document.getElementById("loadTarget");
 
   if (button) {
@@ -75,13 +136,16 @@ window.addEventListener("load", function () {
 
   if (input) {
     input.addEventListener("keydown", function (event) {
+
       if (event.key === "Enter") {
         carregarTarget();
       }
+
     });
   }
 
   posicionarLink();
 });
+
 
 window.addEventListener("resize", posicionarLink);
